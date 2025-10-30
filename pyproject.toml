@@ -1,0 +1,12 @@
+[project]
+name = "sdxl_16ch_loader"
+description = "ComfyUI nodes for loading SDXL checkpoints with 16-channel latent format support. Includes basic loader, precision-controlled loader (fp32/fp16/bf16 for MODEL/CLIP/VAE), and dtype inspection utility."
+version = "1.0.0"
+license = { file = "LICENSE" }
+
+[project.urls]
+Repository = "https://github.com/NeuroSenko/ComfyUI-SDXL-16ch-loader"
+
+[tool.comfy]
+PublisherId = "neurosenko"
+DisplayName = "ComfyUI SDXL 16ch Loader"
