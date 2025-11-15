@@ -4,6 +4,20 @@ import torch
 
 import comfy.sd
 
+def apply_16ch_mod(model):
+  m = model.clone()
+
+  m.add_object_patch('concat_keys', ())
+
+  flux_fmt = latent_formats.Flux()
+
+  # add directly to model and as model patch for patch_model()
+  m.model.latent_format = flux_fmt
+  m.add_object_patch('latent_format', flux_fmt)
+
+  return m
+
+
 class Sdxl16ChLoader:
     @classmethod
     def INPUT_TYPES(s):
@@ -25,10 +39,7 @@ class Sdxl16ChLoader:
         ckpt_path = folder_paths.get_full_path_or_raise("checkpoints", ckpt_name)
         model, clip, vae, clip_vision = comfy.sd.load_checkpoint_guess_config(ckpt_path, output_vae=True, output_clip=True, embedding_directory=folder_paths.get_folder_paths("embeddings"))
 
-        m = model.clone()
-
-        m.add_object_patch('concat_keys', ())
-        m.add_object_patch('latent_format', latent_formats.Flux())
+        m = apply_16ch_mod(model)
 
         return [m, clip, vae]
 
@@ -106,9 +117,7 @@ class Sdxl16ChLoaderWithPrecision:
                 vae = comfy.sd.VAE(sd=vae_sd, dtype=vae_dtype)
 
         # Apply 16ch modifications
-        m = model.clone()
-        m.add_object_patch('concat_keys', ())
-        m.add_object_patch('latent_format', latent_formats.Flux())
+        m = apply_16ch_mod(model)
 
         return [m, clip, vae]
 
